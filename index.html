@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Огляд моделей ШІ 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg:       #f4f6f2;
+  --surface:  #ffffff;
+  --surface2: #f0f4ee;
+  --border:   #dde5d8;
+  --text:     #1a2318;
+  --muted:    #6b7e65;
+  --accent:   #2d6a4f;
+  --accent2:  #52b788;
+  --accent3:  #d8f3dc;
+  --shadow:   0 2px 12px rgba(45,106,79,0.08);
+  --shadow-lg:0 8px 32px rgba(45,106,79,0.14);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  opacity:0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+
+.wrap { max-width:1160px; margin:0 auto; padding:0 24px 80px; position:relative; z-index:1; }
+
+/* ── HEADER ── */
+.header {
+  padding:56px 0 40px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:36px;
+}
+.header-top { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+.eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500;
+  letter-spacing:2px; color:var(--accent2); text-transform:uppercase;
+  margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+}
+.eyebrow::before { content:''; width:24px; height:1px; background:var(--accent2); }
+h1 {
+  font-family:'DM Serif Display', serif; font-size:clamp(2rem,5vw,3.2rem);
+  font-weight:400; line-height:1.15; color:var(--text); max-width:560px;
+}
+h1 em { font-style:italic; color:var(--accent); }
+.header-desc {
+  font-size:0.95rem; color:var(--muted); max-width:400px; line-height:1.7;
+  margin-top:10px;
+}
+.header-stats {
+  display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start;
+}
+.stat-pill {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:14px 20px; text-align:center;
+  min-width:90px; box-shadow:var(--shadow);
+}
+.stat-n { font-family:'DM Serif Display',serif; font-size:2rem; color:var(--accent); line-height:1; }
+.stat-l { font-size:11px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:1px; }
+
+/* ── CONTROLS ── */
+.controls {
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  margin-bottom:28px;
+}
+.controls-label { font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-right:4px; }
+
+.filter-btn {
+  font-family:'Inter',sans-serif; font-size:12px; font-weight:500;
+  padding:7px 16px; border-radius:100px;
+  border:1px solid var(--border); background:var(--surface);
+  color:var(--muted); cursor:pointer; transition:all 0.2s;
+  white-space:nowrap;
+}
+.filter-btn:hover { border-color:var(--accent2); color:var(--accent); }
+.filter-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(45,106,79,0.25); }
+
+.search-wrap { margin-left:auto; position:relative; }
+.search-input {
+  font-family:'Inter',sans-serif; font-size:13px;
+  padding:7px 16px 7px 36px; border:1px solid var(--border);
+  border-radius:100px; background:var(--surface); color:var(--text);
+  outline:none; width:200px; transition:all 0.2s;
+}
+.search-input:focus { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(82,183,136,0.12); }
+.search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:14px; pointer-events:none; }
+
+/* ── VIEW TOGGLE ── */
+.view-toggle { display:flex; gap:4px; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:3px; }
+.view-btn { padding:5px 10px; border-radius:6px; border:none; background:transparent; color:var(--muted); cursor:pointer; font-size:14px; transition:all 0.15s; }
+.view-btn.active { background:var(--accent); color:#fff; }
+
+/* ── GRID VIEW ── */
+.models-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:20px;
+}
+.models-grid.hidden,.models-table-wrap.hidden { display:none; }
+
+/* ── MODEL CARD ── */
+.model-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:24px;
+  box-shadow:var(--shadow); transition:all 0.25s;
+  cursor:default; position:relative; overflow:hidden;
+  animation:fadeUp 0.4s ease both;
+}
+.model-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--c1,#2d6a4f), var(--c2,#52b788));
+}
+.model-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); border-color:var(--accent2); }
+.model-card.hidden-card { display:none; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:none;} }
+
+.card-top { display:flex; align-items:flex-start; margin-bottom:14px; gap:12px; }
+.model-logo {
+  width:44px; height:44px; border-radius:12px; overflow:hidden;
+  background:var(--surface2); display:flex; align-items:center; justify-content:center;
+  font-size:22px; flex-shrink:0; border:1px solid var(--border);
+}
+.model-logo img { width:100%; height:100%; object-fit:cover; border-radius:10px; }
+.card-head { flex:1; min-width:0; }
+.model-name { font-weight:700; font-size:1.05rem; color:var(--text); margin-bottom:2px; line-height:1.3; word-break:break-word; white-space:normal; }
+.model-maker { font-size:11px; color:var(--muted); font-weight:500; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+
+.tag-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+.tag {
+  font-size:10px; font-weight:600; padding:3px 8px; border-radius:100px;
+  letter-spacing:0.3px; text-transform:uppercase;
+}
+.tag-open   { background:#e8f5e9; color:#2e7d32; }
+.tag-prop   { background:#e3f2fd; color:#1565c0; }
+.tag-free   { background:#fff8e1; color:#e65100; }
+.tag-paid   { background:#fce4ec; color:#ad1457; }
+.tag-multi  { background:#ede7f6; color:#4527a0; }
+.tag-fast   { background:#e0f7fa; color:#00695c; }
+.tag-reason { background:#fff3e0; color:#bf360c; }
+
+.model-desc { font-size:0.87rem; color:var(--muted); line-height:1.6; margin-bottom:14px; }
+
+.use-cases { margin-bottom:16px; }
+.use-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+.use-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.use-list { display:flex; flex-direction:column; gap:4px; }
+.use-item { display:flex; align-items:flex-start; gap:7px; font-size:0.82rem; color:var(--text); }
+.use-item::before { content:'→'; color:var(--accent2); font-weight:700; flex-shrink:0; margin-top:1px; }
+
+.strengths-row { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:16px; }
+.strength-chip {
+  font-size:10px; padding:3px 9px; border-radius:100px;
+  background:var(--accent3); color:var(--accent); font-weight:600;
+}
+
+.card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--border); }
+.context-info { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
+.visit-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; font-weight:600; color:var(--accent);
+  text-decoration:none; padding:5px 12px; border-radius:100px;
+  background:var(--accent3); transition:all 0.2s;
+  border:1px solid transparent;
+}
+.visit-btn:hover { background:var(--accent); color:#fff; }
+.visit-btn svg { width:10px; height:10px; }
+
+/* ── TABLE VIEW ── */
+.models-table-wrap { overflow-x:auto; border-radius:16px; box-shadow:var(--shadow); border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; font-size:13px; background:var(--surface); }
+thead { background:var(--surface2); }
+th {
+  padding:14px 16px; text-align:left; font-size:10px; font-weight:700;
+  text-transform:uppercase; letter-spacing:1px; color:var(--muted);
+  border-bottom:2px solid var(--border); white-space:nowrap;
+}
+td {
+  padding:14px 16px; border-bottom:1px solid var(--border); vertical-align:top;
+  transition:background 0.15s;
+}
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:var(--surface2); }
+tr.table-hidden { display:none; }
+.td-model { display:flex; align-items:center; gap:10px; }
+.td-logo { width:32px; height:32px; border-radius:8px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; border:1px solid var(--border); overflow:hidden; }
+.td-logo img { width:100%; height:100%; object-fit:cover; border-radius:6px; }
+.td-name { font-weight:700; color:var(--text); font-size:13px; }
+.td-maker { font-size:10px; color:var(--muted); }
+.td-uses { display:flex; flex-direction:column; gap:3px; }
+.td-use { font-size:11px; color:var(--text); display:flex; gap:5px; }
+.td-use::before { content:'·'; color:var(--accent2); font-weight:900; }
+.td-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.td-link {
+  display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600;
+  color:var(--accent); text-decoration:none; padding:4px 10px; border-radius:100px;
+  background:var(--accent3); white-space:nowrap;
+}
+.td-link:hover { background:var(--accent); color:#fff; }
+.ctx-badge { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); white-space:nowrap; }
+
+/* ── COMPARISON BAR ── */
+.compare-section { margin:36px 0 28px; }
+.compare-title { font-family:'DM Serif Display',serif; font-size:1.3rem; margin-bottom:16px; color:var(--text); }
+.compare-rows { display:flex; flex-direction:column; gap:10px; }
+.compare-row { display:flex; align-items:center; gap:14px; }
+.cmp-label { font-size:12px; font-weight:600; color:var(--muted); width:120px; flex-shrink:0; text-align:right; }
+.cmp-bar-wrap { flex:1; background:var(--surface2); border-radius:100px; height:8px; overflow:hidden; border:1px solid var(--border); }
+.cmp-bar { height:100%; border-radius:100px; transition:width 1s cubic-bezier(0.23,1,0.32,1); }
+.cmp-score { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); width:36px; text-align:right; }
+
+/* ── QUICK PICKER ── */
+.picker-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:36px; box-shadow:var(--shadow); }
+.picker-title { font-family:'DM Serif Display',serif; font-size:1.2rem; color:var(--text); margin-bottom:6px; }
+.picker-sub   { font-size:13px; color:var(--muted); margin-bottom:18px; }
+.picker-grid  { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+.need-chip {
+  padding:10px 14px; border-radius:12px; border:1px solid var(--border);
+  background:var(--surface2); cursor:pointer; transition:all 0.2s; text-align:center;
+}
+.need-chip:hover,.need-chip.active { background:var(--accent3); border-color:var(--accent2); }
+.need-icon { font-size:20px; margin-bottom:4px; }
+.need-label { font-size:11px; font-weight:600; color:var(--text); }
+.need-rec { font-size:10px; color:var(--muted); margin-top:2px; }
+
+.picker-result {
+  margin-top:16px; padding:14px 18px; border-radius:10px;
+  background:var(--accent3); border:1px solid var(--accent2);
+  font-size:13px; line-height:1.6; color:var(--accent); display:none;
+}
+.picker-result.show { display:block; animation:fadeUp 0.3s ease; }
+.picker-result strong { color:var(--text); }
+
+/* ── FOOTER ── */
+footer {
+  text-align:center; padding:32px 0;
+  border-top:1px solid var(--border);
+  font-size:12px; color:var(--muted); margin-top:20px;
+}
+footer span { color:var(--accent); font-weight:600; }
+
+/* ── EMPTY STATE ── */
+.empty { text-align:center; padding:60px 20px; color:var(--muted); }
+.empty-icon { font-size:3rem; margin-bottom:12px; }
+.empty-msg  { font-size:1rem; }
+
+@media(max-width:640px){
+  .header-top { flex-direction:column; }
+  .controls { flex-direction:column; align-items:flex-start; }
+  .search-wrap { margin-left:0; width:100%; }
+  .search-input { width:100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <div>
+        <div class="eyebrow">Оновлено: лютий 2026</div>
+        <h1>Огляд моделей <em>штучного інтелекту</em></h1>
+        <p class="header-desc">Порівняння провідних LLM-моделей 2025–2026 років: сфери застосування, сильні сторони та посилання на офіційні сайти.</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-pill"><div class="stat-n">11</div><div class="stat-l">Моделей</div></div>
+        <div class="stat-pill"><div class="stat-n">7</div><div class="stat-l">Компаній</div></div>
+        <div class="stat-pill"><div class="stat-n">2026</div><div class="stat-l">Актуально</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- QUICK PICKER -->
+  <div class="picker-section">
+    <div class="picker-title">🎯 Яке у вас завдання?</div>
+    <div class="picker-sub">Оберіть сферу — отримайте рекомендацію найкращої моделі</div>
+    <div class="picker-grid">
+      <div class="need-chip" onclick="pick(this,'💻 Написання коду','GPT-5 або Gemini 2.5 Pro — лідери у генерації та рев\'ю коду. Для відкритого розгортання — Llama 4 або Mistral Large 3.')">
+        <div class="need-icon">💻</div><div class="need-label">Код і розробка</div><div class="need-rec">GPT-5, Gemini</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'📝 Контент і тексти','Claude Sonnet 4.5 або GPT-5 — для довгих якісних текстів, дотримання стилю та безпечних відповідей.')">
+        <div class="need-icon">📝</div><div class="need-label">Тексти і контент</div><div class="need-rec">Claude, GPT-5</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'⚖️ Право і медицина','Claude Opus 4 — лідер у безпечному, обережному та точному аналізі чутливих тем. Мінімальні галюцинації.')">
+        <div class="need-icon">⚖️</div><div class="need-label">Право і медицина</div><div class="need-rec">Claude Opus</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'📊 Дані і аналітика','Gemini 2.5 Pro з вікном у 1M токенів чи Llama 4 Scout (до 10M) — для аналізу великих масивів документів.')">
+        <div class="need-icon">📊</div><div class="need-label">Аналіз даних</div><div class="need-rec">Gemini, Llama 4</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'🌐 Реальний час і новини','Grok 4 — прямий доступ до X/Twitter і реального часу. Perplexity Sonar — для швидких відповідей з веб-пошуком.')">
+        <div class="need-icon">🌐</div><div class="need-label">Реальний час</div><div class="need-rec">Grok, Perplexity</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'🏢 Корпоративне розгортання','Mistral Large 3 або Llama 4 — відкриті ваги, self-hosting, повний контроль над даними без залежності від вендора.')">
+        <div class="need-icon">🏢</div><div class="need-label">Self-hosting</div><div class="need-rec">Mistral, Llama</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'🎨 Мультимодальність','Gemini 2.5 Pro — текст, зображення, аудіо, відео в одному запиті. GPT-5 — також сильний у мультимодальних завданнях.')">
+        <div class="need-icon">🎨</div><div class="need-label">Зображення/відео</div><div class="need-rec">Gemini, GPT-5</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'💰 Мінімальна вартість','DeepSeek V3 або Mistral — близькі до топових показників за 10–15% ціни GPT-5. Llama 4 — безкоштовно при self-hosting.')">
+        <div class="need-icon">💰</div><div class="need-label">Економ. варіант</div><div class="need-rec">DeepSeek, Mistral</div>
+      </div>
+      <div class="need-chip" onclick="pick(this,'📚 Дослідження і навчання','NotebookLM — ідеальний для роботи з документами, PDF, статтями. Безкоштовно генерує конспекти, флешкарти та аудіоподкасти з ваших матеріалів.')">
+        <div class="need-icon">📚</div><div class="need-label">Дослідження/навчання</div><div class="need-rec">NotebookLM</div>
+      </div>
+    </div>
+    <div class="picker-result" id="pickerResult"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <span class="controls-label">Фільтр:</span>
+    <button class="filter-btn active" onclick="filterCards('all',this)">Всі</button>
+    <button class="filter-btn" onclick="filterCards('open',this)">Open Source</button>
+    <button class="filter-btn" onclick="filterCards('prop',this)">Комерційні</button>
+    <button class="filter-btn" onclick="filterCards('multi',this)">Мультимодальні</button>
+    <button class="filter-btn" onclick="filterCards('reason',this)">Міркування</button>
+    <button class="filter-btn" onclick="filterCards('fast',this)">Швидкі</button>
+
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="setView('grid',this)" title="Картки">⊞</button>
+      <button class="view-btn" onclick="setView('table',this)" title="Таблиця">☰</button>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" placeholder="Пошук моделі..." oninput="searchModels(this.value)">
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="models-grid" id="gridView"></div>
+
+  <!-- TABLE -->
+  <div class="models-table-wrap hidden" id="tableView">
+    <table>
+      <thead>
+        <tr>
+          <th>Модель</th>
+          <th>Найкраще для</th>
+          <th>Теги</th>
+          <th>Контекст</th>
+          <th>Сайт</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    Огляд підготовлено на основі публічних даних та бенчмарків • <span>Олена Фонова</span> • 2026 •
+    Дані актуальні на лютий 2026 року
+  </footer>
+
+</div>
+
+<script>
+var MODELS = [
+  {
+    id:'gpt5',
+    name:'GPT-5',
+    maker:'OpenAI',
+    icon:'🟢',
+    c1:'#10a37f', c2:'#34d399',
+    tags:['prop','multi','reason'],
+    tagLabels:[{l:'Комерційна',c:'tag-prop'},{l:'Мультимодал.',c:'tag-multi'},{l:'Міркування',c:'tag-reason'}],
+    desc:'Флагманська модель OpenAI 2025 року з вікном 400K токенів і рівнем галюцинацій 6.2%. Лідер у загальному інтелекті та кодингу.',
+    uses:[
+      'Написання та рев\'ю коду будь-якою мовою програмування',
+      'Складний многокроковий аналіз і дослідження',
+      'Контент для бізнесу: звіти, презентації, листи',
+      'Агентні робочі потоки і автоматизація'
+    ],
+    strengths:['Кодинг','Аналітика','Агентність','Багатомовність'],
+    ctx:'400K токенів',
+    url:'https://openai.com',
+    urlLabel:'openai.com'
+  },
+  {
+    id:'claude',
+    name:'Claude Opus 4 / Sonnet 4.5',
+    maker:'Anthropic',
+    icon:'🟠',
+    c1:'#d97706', c2:'#f59e0b',
+    tags:['prop','reason'],
+    tagLabels:[{l:'Комерційна',c:'tag-prop'},{l:'Міркування',c:'tag-reason'}],
+    desc:'Найбезпечніша і найетичніша модель на ринку. Sonnet 4.5 — 1M токенів. Ідеальна для чутливих галузей та довгих документів.',
+    uses:[
+      'Юридичний аналіз та складання документів',
+      'Медична та наукова аналітика',
+      'Робота з великими документами (книги, звіти)',
+      'Освітні інструменти та безпечний контент'
+    ],
+    strengths:['Безпека','Довгий контекст','Точність','Етика'],
+    ctx:'1M (Sonnet) / 200K (Opus)',
+    url:'https://claude.ai',
+    urlLabel:'claude.ai'
+  },
+  {
+    id:'gemini',
+    name:'Gemini 2.5 Pro',
+    maker:'Google DeepMind',
+    icon:'🔵',
+    c1:'#1a73e8', c2:'#4285f4',
+    tags:['prop','multi','reason'],
+    tagLabels:[{l:'Комерційна',c:'tag-prop'},{l:'Мультимодал.',c:'tag-multi'},{l:'Міркування',c:'tag-reason'}],
+    desc:'Лідер по контексту (1M токенів) та мультимодальності. Найкращий вибір для Google Workspace. Топ бенчмарків 2025.',
+    uses:[
+      'Аналіз великих масивів даних і документів',
+      'Мультимодальні задачі: текст + зображення + відео + аудіо',
+      'Інтеграція з Google Docs, Sheets, Gmail',
+      'Наукові дослідження і математичне міркування'
+    ],
+    strengths:['Мультимодал.','Великий контекст','Google екосист.','Наука'],
+    ctx:'1M токенів',
+    url:'https://gemini.google.com',
+    urlLabel:'gemini.google.com'
+  },
+  {
+    id:'grok',
+    name:'Grok 4',
+    maker:'xAI (Elon Musk)',
+    icon:'⚫',
+    c1:'#111827', c2:'#374151',
+    tags:['prop','multi','fast'],
+    tagLabels:[{l:'Комерційна',c:'tag-prop'},{l:'Реальний час',c:'tag-fast'}],
+    desc:'Інтегрована з X (Twitter), має доступ до реальних соцмережевих даних. Сильна у трендах і живих подіях.',
+    uses:[
+      'Моніторинг соціальних мереж і трендів',
+      'Аналіз актуальних новин і дискусій',
+      'Персоналізований контент для X-платформи',
+      'Неформальне спілкування та чат'
+    ],
+    strengths:['Реальний час','Соцмережі','X інтеграція','Актуальність'],
+    ctx:'256K токенів (API)',
+    url:'https://grok.com',
+    urlLabel:'grok.com'
+  },
+  {
+    id:'llama',
+    name:'Llama 4 (Scout / Maverick)',
+    maker:'Meta AI',
+    icon:'🦙',
+    c1:'#0064e0', c2:'#0096ff',
+    tags:['open','multi'],
+    tagLabels:[{l:'Open Source',c:'tag-open'},{l:'Мультимодал.',c:'tag-multi'}],
+    desc:'Відкрита модель Meta з найбільшим у світі контекстним вікном (до 10M токенів у Scout). Безкоштовно для self-hosting.',
+    uses:[
+      'Розгортання на власних серверах (data privacy)',
+      'Аналіз надвеликих баз документів і кодових репозиторіїв',
+      'Fine-tuning під специфічні бізнес-задачі',
+      'Академічні дослідження і прототипування'
+    ],
+    strengths:['Open Source','10M контекст','Fine-tuning','Безкоштовно'],
+    ctx:'До 10M токенів (Scout)',
+    url:'https://llama.meta.com',
+    urlLabel:'llama.meta.com'
+  },
+  {
+    id:'mistral',
+    name:'Mistral Large 3',
+    maker:'Mistral AI (Франція)',
+    icon:'🌬️',
+    c1:'#ff7000', c2:'#ff9500',
+    tags:['open','fast','reason'],
+    tagLabels:[{l:'Open Source',c:'tag-open'},{l:'Швидка',c:'tag-fast'}],
+    desc:'Французька модель на архітектурі MoE. 675B параметрів, 92% від GPT-5 за 15% ціни. Лідер серед EU-компаній.',
+    uses:[
+      'Корпоративне розгортання зі збереженням даних у ЄС',
+      'Стартапи та cost-conscious проекти',
+      'Спеціалізовані задачі: OCR, документи',
+      'Мобільні та edge-пристрої (Ministral 3)'
+    ],
+    strengths:['Ефективність','EU compliance','Self-hosting','OCR'],
+    ctx:'128K токенів',
+    url:'https://mistral.ai',
+    urlLabel:'mistral.ai'
+  },
+  {
+    id:'deepseek',
+    name:'DeepSeek V3',
+    maker:'DeepSeek (Китай)',
+    icon:'🔬',
+    c1:'#6366f1', c2:'#8b5cf6',
+    tags:['open','fast','reason'],
+    tagLabels:[{l:'Open Source',c:'tag-open'},{l:'Доступна',c:'tag-fast'},{l:'Міркування',c:'tag-reason'}],
+    desc:'Відкрита модель, яка шокувала ринок: конкурує з GPT-4 за 5–10% ціни. R1 — спеціалізована на глибокому міркуванні.',
+    uses:[
+      'Аналітика і дослідження з обмеженим бюджетом',
+      'Математика та наукові обчислення',
+      'Конкурентна заміна дорогих API',
+      'Кодинг та технічна документація'
+    ],
+    strengths:['Низька ціна','Міркування','Open Source','Математика'],
+    ctx:'128K токенів',
+    url:'https://www.deepseek.com',
+    urlLabel:'deepseek.com'
+  },
+  {
+    id:'perplexity',
+    name:'Perplexity Sonar',
+    maker:'Perplexity AI',
+    icon:'🔍',
+    c1:'#1a9ce0', c2:'#38bdf8',
+    tags:['prop','fast'],
+    tagLabels:[{l:'Комерційна',c:'tag-prop'},{l:'Веб-пошук',c:'tag-fast'}],
+    desc:'Модель на базі Llama, оптимізована для швидкого пошуку з цитуванням. У 10× швидша від Gemini при збереженні точності.',
+    uses:[
+      'Швидкий пошук з перевіреними джерелами і цитатами',
+      'Дослідження та академічні довідки',
+      'Журналістика і фактчекінг',
+      'Замінник пошукових систем для складних запитів'
+    ],
+    strengths:['Веб-пошук','Цитування','Швидкість','Точність'],
+    ctx:'128K токенів',
+    url:'https://www.perplexity.ai',
+    urlLabel:'perplexity.ai'
+  },
+  {
+    id:'qwen',
+    name:'Qwen 3 (235B)',
+    maker:'Alibaba Cloud',
+    icon:'🌏',
+    c1:'#e8411a', c2:'#f97316',
+    tags:['open','multi','reason'],
+    tagLabels:[{l:'Open Source',c:'tag-open'},{l:'Мультимодал.',c:'tag-multi'}],
+    desc:'Найсильніша відкрита модель від Alibaba. Ліцензія Apache 2.0, архітектура MoE — висока продуктивність при низькій вартості.',
+    uses:[
+      'E-commerce та персоналізований маркетинг',
+      'Бізнес-аналітика великих обсягів даних',
+      'Багатомовні задачі (сильний у азійських мовах)',
+      'Корпоративна автоматизація без vendor lock-in'
+    ],
+    strengths:['Open Source','Багатомовність','E-commerce','MoE архіт.'],
+    ctx:'128K токенів',
+    url:'https://qwenlm.github.io',
+    urlLabel:'qwenlm.github.io'
+  },
+  {
+    id:'copilot',
+    name:'Microsoft Copilot',
+    maker:'Microsoft + OpenAI',
+    icon:'🪟',
+    c1:'#0078d4', c2:'#00bcf2',
+    tags:['prop','multi','fast'],
+    tagLabels:[{l:'Комерційна',c:'tag-prop'},{l:'Мультимодал.',c:'tag-multi'}],
+    desc:'GPT-5 у Microsoft-екосистемі: Word, Excel, Teams, Outlook. Найкращий вибір для організацій на платформі Microsoft 365.',
+    uses:[
+      'Автоматизація Word, Excel, PowerPoint, Outlook',
+      'Корпоративні робочі потоки в Microsoft 365',
+      'Аналіз бізнес-даних через Power BI',
+      'Командна робота і узагальнення нарад у Teams'
+    ],
+    strengths:['Microsoft 365','Teams','Excel','Корпоративні'],
+    ctx:'128K токенів',
+    url:'https://copilot.microsoft.com',
+    urlLabel:'copilot.microsoft.com'
+  },
+  {
+    id:'notebooklm',
+    name:'NotebookLM',
+    maker:'Google Labs',
+    icon:'📓',
+    c1:'#1a73e8', c2:'#fbbc04',
+    tags:['prop','multi','fast'],
+    tagLabels:[{l:'Комерційна',c:'tag-prop'},{l:'Мультимодал.',c:'tag-multi'},{l:'Безкоштовна',c:'tag-free'}],
+    desc:'ШІ-дослідник від Google на базі Gemini з 1M токенів контексту. Унікальна функція Audio Overview — перетворює документи на подкаст. Безкоштовний для всіх.',
+    uses:[
+      'Дослідження і синтез великих колекцій PDF, статей, книг',
+      'Підготовка до іспитів: флешкарти, вікторини, конспекти',
+      'Audio Overview — аудіоподкаст з ваших джерел за хвилину',
+      'Юридичний і науковий аналіз з цитуванням джерел',
+      'Створення інфографік, слайдів і ментальних карт'
+    ],
+    strengths:['Дослідження','Audio/Video','Цитування','Безкоштовно','Ментальні карти'],
+    ctx:'1M токенів (Gemini)',
+    url:'https://notebooklm.google.com',
+    urlLabel:'notebooklm.google.com'
+  }
+];
+
+// ── RENDER CARDS ──────────────────────────────────────────────────────────
+var grid = document.getElementById('gridView');
+var tbody = document.getElementById('tableBody');
+
+MODELS.forEach(function(m, i){
+  // CARD
+  var card = document.createElement('div');
+  card.className = 'model-card';
+  card.dataset.tags = m.tags.join(' ');
+  card.dataset.name = m.name.toLowerCase()+' '+m.maker.toLowerCase();
+  card.style.setProperty('--c1', m.c1);
+  card.style.setProperty('--c2', m.c2);
+  card.style.animationDelay = (i*0.06)+'s';
+
+  var tagsHtml = m.tagLabels.map(function(t){ return '<span class="tag '+t.c+'">'+t.l+'</span>'; }).join('');
+  var usesHtml = m.uses.map(function(u){ return '<div class="use-item">'+u+'</div>'; }).join('');
+  var strengthsHtml = m.strengths.map(function(s){ return '<span class="strength-chip">'+s+'</span>'; }).join('');
+
+  card.innerHTML =
+    '<div class="card-top">'+
+      '<div class="model-logo">'+m.icon+'</div>'+
+      '<div class="card-head">'+
+        '<div class="model-name">'+m.name+'</div>'+
+        '<div class="model-maker">'+m.maker+'</div>'+
+        '<div class="tag-row">'+tagsHtml+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<p class="model-desc">'+m.desc+'</p>'+
+    '<div class="use-cases">'+
+      '<div class="use-label">Найкраще для</div>'+
+      '<div class="use-list">'+usesHtml+'</div>'+
+    '</div>'+
+    '<div class="strengths-row">'+strengthsHtml+'</div>'+
+    '<div class="card-footer">'+
+      '<span class="context-info">📐 '+m.ctx+'</span>'+
+      '<a class="visit-btn" href="'+m.url+'" target="_blank" rel="noopener">'+m.urlLabel+
+        '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 10L10 2M5 2h5v5"/></svg>'+
+      '</a>'+
+    '</div>';
+  grid.appendChild(card);
+
+  // TABLE ROW
+  var tr = document.createElement('tr');
+  tr.dataset.tags = m.tags.join(' ');
+  tr.dataset.name = m.name.toLowerCase()+' '+m.maker.toLowerCase();
+  var tdTagsHtml = m.tagLabels.map(function(t){ return '<span class="tag '+t.c+'">'+t.l+'</span>'; }).join('');
+  var tdUsesHtml = m.uses.slice(0,3).map(function(u){ return '<div class="td-use">'+u+'</div>'; }).join('');
+  tr.innerHTML =
+    '<td><div class="td-model">'+
+      '<div class="td-logo">'+m.icon+'</div>'+
+      '<div><div class="td-name">'+m.name+'</div><div class="td-maker">'+m.maker+'</div></div>'+
+    '</div></td>'+
+    '<td><div class="td-uses">'+tdUsesHtml+'</div></td>'+
+    '<td><div class="td-tags">'+tdTagsHtml+'</div></td>'+
+    '<td><span class="ctx-badge">'+m.ctx+'</span></td>'+
+    '<td><a class="td-link" href="'+m.url+'" target="_blank" rel="noopener">↗ '+m.urlLabel+'</a></td>';
+  tbody.appendChild(tr);
+});
+
+// ── FILTER ────────────────────────────────────────────────────────────────
+var activeFilter = 'all';
+function filterCards(tag, btn){
+  activeFilter = tag;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  applyFilters();
+}
+function applyFilters(){
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.model-card').forEach(function(c){
+    var tagOk = activeFilter==='all' || c.dataset.tags.includes(activeFilter);
+    var nameOk = !q || c.dataset.name.includes(q);
+    c.classList.toggle('hidden-card', !(tagOk && nameOk));
+  });
+  document.querySelectorAll('#tableBody tr').forEach(function(r){
+    var tagOk = activeFilter==='all' || r.dataset.tags.includes(activeFilter);
+    var nameOk = !q || r.dataset.name.includes(q);
+    r.classList.toggle('table-hidden', !(tagOk && nameOk));
+  });
+}
+function searchModels(val){ applyFilters(); }
+
+// ── VIEW TOGGLE ───────────────────────────────────────────────────────────
+function setView(v, btn){
+  document.querySelectorAll('.view-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('gridView').classList.toggle('hidden', v==='table');
+  document.getElementById('tableView').classList.toggle('hidden', v==='grid');
+}
+
+// ── PICKER ────────────────────────────────────────────────────────────────
+function pick(el, topic, rec){
+  document.querySelectorAll('.need-chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  var r = document.getElementById('pickerResult');
+  r.innerHTML = '<strong>'+topic+':</strong> '+rec;
+  r.classList.add('show');
+}
+</script>
+</body>
+</html>
